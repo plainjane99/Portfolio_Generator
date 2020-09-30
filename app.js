@@ -1,21 +1,38 @@
-// to use the file system module from node.js, must have the following:
-const fs = require('fs');
-// the require statement is a built-in function that globally availabile in node.js
-// it allows the app.js file to access the fs module's functions through the fs assignment
+const inquirer = require('inquirer');
 
-// add our local module
+inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is your name?'
+        }
+    ])
+    // answers object will be returned as a promise
+    .then(answers => console.log(answers));
+
+
+// to use the file system module from node.js, must have the following:
+// const fs = require('fs');
+// the require statement is a built-in function that is globally availabile in node.js
+// it allows this app.js file to access the fs module's functions through the fs assignment
+
+// add our local javascript utility module
 // this is the destination file so it needs the "require" statement at the top
-const generatePage = require('./src/page-template.js');
+// const generatePage = require('./src/page-template.js');
 
 // process is a global object that represents everything going on with this particular app
 // this object holds data providing context to where the app was executed
 //
-// the argv property of process is an array that holds exactly what was typed into the command line
-// upon execution so that we can capture that data and use it in the app
-// The first two indexes of process.argv represent Node.js and the file we executed
+// process.argv is how we pass data from the command line to our script
+// process.argv holds the data from the command line in an array
+// example, we type the following into the command line:  node index.js Hello
+// process.argv[0] = node
+// procres.argv[1] = index.js
+// process.argv[2] = Hello
 //
 // process.argv.slice slices everything beginning at index of 2 since we do not need the first two indexes
-const profileDataArgs = process.argv.slice(2);
+// const profileDataArgs = process.argv.slice(2);
 
 // the arrow is a simplified way to write a function
 // it removes the use of the function keyword, 
@@ -42,8 +59,10 @@ const profileDataArgs = process.argv.slice(2);
 
 // assignment destructuring
 // assigns elements of an array to variable names in a single expression
-const [name, github] = profileDataArgs;
+// const [name, github] = profileDataArgs;
 
+// shift to using inquirer instead of process.argv
+// const pageHTML = generatePage(name, github);
 
 // file system module of node.js
 // file system function can create multiple file types,
@@ -53,11 +72,12 @@ const [name, github] = profileDataArgs;
 // The next argument is the data that will write onto the file,
 // in this case the HTML template literal.
 // The last parameter is a callback function that will be used for error handling.
-fs.writeFile('./index.html', generatePage(name, github), err => {
+// function of err = a callback function to run, in which err is the output from the method
+// fs.writeFile('./index.html', pageHTML, err => {
     // if err exists, an error message is displayed by creating an exception
     // and stops the execution of the code
     // somehow this pulls from the error object but the lesson doesn't explain how
-    if(err) throw new Error(err);
+    // if(err) throw err;
 
-    console.log('Portfolio complete!  Check out index.html to see the output!');
-});
+//     console.log('Portfolio complete!  Check out index.html to see the output!');
+// });
