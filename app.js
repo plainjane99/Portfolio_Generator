@@ -1,3 +1,12 @@
+// to use the file system module from node.js, must have the following:
+const fs = require('fs');
+// the require statement is a built-in function that is globally availabile in node.js
+// it allows this app.js file to access the fs module's functions through the fs assignment
+
+// add our local javascript utility module
+// this is the destination file so it needs the "require" statement at the top
+const generatePage = require('./src/page-template.js');
+
 const inquirer = require('inquirer');
 
 const promptUser = () => {
@@ -140,18 +149,16 @@ const promptProject = portfolioData => {
 promptUser()
     .then(promptProject)
     .then(portfolioData => {
-        console.log(portfolioData);
-    });
 
+        const pageHTML = generatePage(portfolioData);
 
-// to use the file system module from node.js, must have the following:
-// const fs = require('fs');
-// the require statement is a built-in function that is globally availabile in node.js
-// it allows this app.js file to access the fs module's functions through the fs assignment
+        fs.writeFile('./index.html', pageHTML, err => {
+          if (err) throw new Error(err);
 
-// add our local javascript utility module
-// this is the destination file so it needs the "require" statement at the top
-// const generatePage = require('./src/page-template.js');
+          console.log('Page created! Check out index.html in this directory to see it!');
+        });
+    })
+;
 
 // process is a global object that represents everything going on with this particular app
 // this object holds data providing context to where the app was executed
@@ -206,10 +213,10 @@ promptUser()
 // The last parameter is a callback function that will be used for error handling.
 // function of err = a callback function to run, in which err is the output from the method
 // fs.writeFile('./index.html', pageHTML, err => {
-    // if err exists, an error message is displayed by creating an exception
-    // and stops the execution of the code
-    // somehow this pulls from the error object but the lesson doesn't explain how
-    // if(err) throw err;
+//     // if err exists, an error message is displayed by creating an exception
+//     // and stops the execution of the code
+//     // somehow this pulls from the error object but the lesson doesn't explain how
+//     if(err) throw err;
 
 //     console.log('Portfolio complete!  Check out index.html to see the output!');
 // });
