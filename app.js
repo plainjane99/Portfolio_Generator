@@ -1,7 +1,12 @@
 // to use the file system module from node.js, must have the following:
-const fs = require('fs');
+// const fs = require('fs');
 // the require statement is a built-in function that is globally availabile in node.js
 // it allows this app.js file to access the fs module's functions through the fs assignment
+
+// add our local javascript utility module
+// we are important an object so we can use object destructuring
+// to create variables out of those properties instead of having to use dot notation
+const { writeFile, copyFile } = require('./utils/generate-site.js');
 
 // add our local javascript utility module
 // this is the destination file so it needs the "require" statement at the top
@@ -146,17 +151,36 @@ const promptProject = portfolioData => {
 // answers object will be returned as a promise
 // chains the functions
 // only want to prompt users with the project questions after the profile questions 
+// asks the user for their information with Inquirer prompts
+// this returns all of the data as an object in a Promise
 promptUser()
+    // function captures the returning data from promptUser
+    // and we recursively call promptProject for as many projects as the user wants to add
+    // Each project will be pushed into a project array in a data object
     .then(promptProject)
+    // the project data object is returned as portfolioData
     .then(portfolioData => {
-
-        const pageHTML = generatePage(portfolioData);
-
-        fs.writeFile('./index.html', pageHTML, err => {
-          if (err) throw new Error(err);
-
-          console.log('Page created! Check out index.html in this directory to see it!');
-        });
+        // passes the data object information to generatePage
+        // and returns html template code
+        return generatePage(portfolioData);
+    })
+    // the html code is passed into writeFile
+    // wheich returns a promise
+    .then(pageHTML => {
+      return writeFile(pageHTML);
+    })
+    // upon successful file creation, the promise object is logged and 
+    // calls copyFile to return another promise
+    .then(writeFileResponse => {
+      console.log(writeFileResponse);
+      return copyFile();
+    })
+    // the returned promise is logged to let us know the css file was copied correctly
+    .then(copyFileResponse => {
+      console.log(copyFileResponse);
+    })
+    .catch(err => {
+      console.log(err);
     })
 ;
 
